@@ -177,6 +177,7 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         active_obj = context.view_layer.objects.active
         orig_name = arm.name
         orig_action = arm.animation_data.action if arm.animation_data else None
+        orig_action_name_map = {}
         orig_pose_position = arm.data.pose_position
         orig_timeline_range = context.scene.frame_start, context.scene.frame_end
 
@@ -251,7 +252,12 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
                         context, arm, actions_to_process, settings.action_prefix
                     )
                     export_list =baked_list
-            else:
+
+            else:#If not use virtual deform, add original actions name prefix
+                for action in actions_to_process:
+                    orig_action_name_map[action] = action.name
+                    if not action.name.startswith(settings.action_prefix):
+                        action.name = f"{settings.action_prefix}{action.name}"
                 export_list = actions_to_process
 
             #Auto fix scale
@@ -379,6 +385,11 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
                                     kp.co.y *= scale_factor
                                     kp.handle_left.y *= scale_factor
                                     kp.handle_right.y *= scale_factor
+
+            #Restore actions name as original if not use virtual deform
+            if not settings.use_virtual_deform and orig_action_name_map:
+                for action, orig_name in orig_action_name_map.items():
+                    action.name = orig_name
 
             #Restore before baked state
             AddonFunctions.restore_baked_action(arm, action_map, settings.action_prefix, baked_states_pack)
