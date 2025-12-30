@@ -121,7 +121,7 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         if settings.use_virtual_deform == False:
             row.prop(settings, "bake_nla_strips", text="Bake NLA Strips")
         if settings.export_type == "ALL":
-            box_action.prop(settings, "file_name", text="File Name:")
+            box_action.prop(settings, "file_name", text="File Name")
         box_action.prop(settings, "action_prefix", text="Action Prefix")
 
         box_advanced = layout.box()
