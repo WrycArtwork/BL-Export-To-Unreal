@@ -107,7 +107,7 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         box_mesh.prop(settings, "mesh_path", text="Mesh Path")
         row = box_mesh.row(align=True)
         row.prop(settings, "apply_modifiers", text="Apply Modifiers")
-        box_mesh.prop(settings, "skeletal_prefix", text="Skeletal Prefix:")
+        box_mesh.prop(settings, "skeletal_prefix", text="Skeletal Prefix")
 
         box_action = layout.box()
         box_action.label(text="Action")
@@ -123,7 +123,7 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         if settings.export_type == "ALL":
             box_action.prop(settings, "file_name", text="File Name:")
         else:
-            box_action.prop(settings, "action_prefix", text="Action Prefix:")
+            box_action.prop(settings, "action_prefix", text="Action Prefix")
 
         box_advanced = layout.box()
         row = box_advanced.row()
