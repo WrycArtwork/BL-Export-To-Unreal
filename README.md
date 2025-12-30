@@ -32,7 +32,24 @@ Use Virtual Deform 使用虛擬變形骨骼<br>
 需設定對應名稱在匯出後模型網格體的頂點組才會對應至去除前綴的虛擬變形骨。<br>
 ####模型/骨骼輸出:<br>
 <img width="407" height="119" alt="image" src="https://github.com/user-attachments/assets/51f6fdc1-0226-4888-86fe-b689e6507614" /><br>
-Mesh Path有指定位置就會在輸出時輸出骨架及網格體。輸出後的檔案名稱為Skeletal prefix
+Mesh Path有指定匯出路徑就會在輸出時輸出骨架及網格體。輸出後的檔案名稱為Skeletal prefix + Armature名稱<br>
+<img width="323" height="189" alt="image" src="https://github.com/user-attachments/assets/a064f303-9e1e-4058-ace8-4acb61a530fa" /><br>
+EX:Skeletal Prefix :SK_，Armature 名稱:Mannequin，輸出後的名稱為:SK_Mannequin<br>
+Apply Modifiers套用修改器建議保持啟用<br>
+####動作輸出:<br>
+<img width="407" height="149" alt="image" src="https://github.com/user-attachments/assets/d7a8f9e2-7cfc-450c-b0e7-d98e26a18e97" /><br>
+Action Path有指定匯出路徑就會輸出指定的動作。<br>
+<img width="1528" height="184" alt="image" src="https://github.com/user-attachments/assets/fcdff198-93a8-480a-b77c-9193a52bc49f" /><br>
+需啟用fake_user。
+Export Type匯出模式為Selected所選項時，會匯出當前blender視圖中選擇中的動作。<br>
+Export Type匯出模式為Batch批次時，會出現Export Actions的按鍵可以選擇要匯出的動作。<br>
+<img width="701" height="639" alt="image" src="https://github.com/user-attachments/assets/95867858-0c7d-47b4-b53d-f1966755a145" />
+Export Type匯出模式為ALL全部時，將會
+
+
+
+
+
 
 
 
