@@ -1,10 +1,10 @@
 # BL Export To Unreal
-<img width="414" height="449" alt="image" src="https://github.com/user-attachments/assets/3cb221e4-c883-4cfb-bcad-974caadad798" /><br><br>
+![介面](https://github.com/user-attachments/assets/3cb221e4-c883-4cfb-bcad-974caadad798)<br><br>
 [English](#english) | [繁體中文](#繁體中文) | [簡體中文](#簡體中文)
 
 ---
 
-##English
+## English
 
 
 ---
@@ -13,28 +13,32 @@
 此插件專為 Blender 導出至 Unreal Engine 的 **骨架模型 (Skeletal Mesh)** 與 **動畫動作 (Animation Sequence)** 設計。<br>
 此插件支持繁體中文，可在Preferences > Interface > Language內修改，以下功能說明以英文為主。<br>
 Blender版本建議在4.2以上<br>
-### 使用說明:
-**目標選擇** <br>
-使用前需在Object Mode物體模式中選中欲輸出的骨骼與網格體。<br><br>
-**插件開啟位置:** <br>
-<img width="484" height="529" alt="image" src="https://github.com/user-attachments/assets/5456db2e-8b74-477d-a387-aa118e95a2ac" /><br>
-### 核心功能:
-<img width="408" height="72" alt="image" src="https://github.com/user-attachments/assets/cd524f2b-c52d-40e0-b6ab-f29e263ce76f" /><br><br>
-**1. Auto Fix Scale 自動修正比例**<br>
-依據blender場景單位為基準自動解算縮放比例，確保骨骼網格體及動作在Blender中的尺寸與匯入Unreal的尺寸一致。<br><br>
-**2.Use Virtual Deform 使用虛擬變形骨骼**<br>
-* **適用場景**:骨架由blender轉換軸向後的骨骼與控制器(控制骨)驅動另一組用於輸出的骨骼(變形骨)時使用。<br>
+## 使用說明:
+### 目標選擇
+使用前需在Object Mode物體模式中選中要輸出的骨骼與網格體。
+### 插件開啟位置
+![開啟位置](https://github.com/user-attachments/assets/5456db2e-8b74-477d-a387-aa118e95a2ac)
+## 核心功能:
+![核心功能](https://github.com/user-attachments/assets/cd524f2b-c52d-40e0-b6ab-f29e263ce76f)
+### Auto Fix Scale 自動修正比例
+依據blender場景單位為基準自動解算縮放比例，確保骨骼網格體及動作在Blender中的尺寸與匯入Unreal的尺寸一致
+### Use Virtual Deform 使用虛擬變形骨骼
+> **適用場景**:骨架由blender轉換軸向後的骨骼與控制器(控制骨)驅動另一組用於輸出的骨骼(變形骨)時使用。<br>
 <img width="511" height="552" alt="image" src="https://github.com/user-attachments/assets/6ab4a0d6-8ab7-4aa9-bd29-f88b763da8d0" /><br>
-* **命名規則**:
-  * **控制骨**:xxx
-  * **變形骨**:前綴 + xxx (變形骨名稱需有與插件偏好設定相同的前綴)<br>
-<img width="648" height="404" alt="image" src="https://github.com/user-attachments/assets/4a294b19-b091-4afc-bd70-dcc28bc4fefe" /><br>
-* **設定要求**：變形骨的「變形 (Deform)」選項需設為 `False`；對應名稱控制骨的「變形 (Deform)」選項需設為 `True`。
+>**命名規則**:
+>> **控制骨**:xxx<br>
+>> **變形骨**:前綴 + xxx (變形骨名稱需有與插件偏好設定相同的前綴)<br>
+>>![偏好設定](https://github.com/user-attachments/assets/4a294b19-b091-4afc-bd70-dcc28bc4fefe)<br>
+>>網格體的頂點組 (Vertex Groups)名稱對應 啟用Deform的控制骨名稱<br>
+>>>---
+> **設定要求**：<br>
+>>變形骨的「變形 (Deform)」選項需設為 `False`<br>
+>>對應名稱控制骨的「變形 (Deform)」選項需設為 `True`。<br>
 <img width="330" height="479" alt="image" src="https://github.com/user-attachments/assets/65e52ed4-85fb-4f7b-a634-2b517ca6d234" /><br>
-  * 網格體的頂點組 (Vertex Groups)名稱對應 啟用Deform的控制骨名稱。
-* **運作方式**:
-  * 自動將控制骨動畫烘培至變形骨。
-  * **輸出後自動移除前綴**，確保 Unreal 識別正確的骨骼名稱。
+
+>**運作方式**:
+>>自動將控制骨動畫烘培至變形骨。<br>
+>>**輸出後自動移除前綴**，確保 Unreal 識別正確的骨骼名稱。
 ### 模型/骨骼輸出:
 <img width="407" height="119" alt="image" src="https://github.com/user-attachments/assets/51f6fdc1-0226-4888-86fe-b689e6507614" /><br>
 Mesh Path有指定匯出路徑就會在輸出時輸出骨架及網格體。輸出後的檔案名稱為Skeletal prefix + Armature名稱<br>
