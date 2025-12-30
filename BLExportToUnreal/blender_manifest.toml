@@ -1,0 +1,12 @@
+schema_version = "1.0.0"
+
+id = "BLExportToUnreal"
+version = "0.0.1"
+name = "BL Export To Unreal"
+tagline = "Easily export meshes, armatures, and animations to Unreal Engine with automatically fixed naming, scale, and compatibility.."
+maintainer = "WRYC <wryc.artwork@gmail.com>"
+type = "add-on"
+tags = ["Export"]
+blender_version_min = "4.2.0"
+license = ["SPDX:GPL-3.0-or-later"]
+website = "https://github.com/WrycArtwork/BL-Export-To-Unreal"
