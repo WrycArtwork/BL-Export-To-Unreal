@@ -31,9 +31,9 @@
 
 ## 核心功能:
 ![核心功能](https://github.com/user-attachments/assets/cd524f2b-c52d-40e0-b6ab-f29e263ce76f)
-### Auto Fix Scale 自动修正比例
+### Auto Fix Scale 自动修正比例:
 依据blender场景单位为基准自动解算缩放比例，确保骨骼网格体及动作在Blender中的尺寸与汇入Unreal的尺寸一致
-### Use Virtual Deform 使用虚拟变形骨骼
+### Use Virtual Deform 使用虚拟变形骨骼:
 **适用场景**: Blender骨骼坐标系主轴为Y，Unreal骨骼坐标系主轴为X，且两者左右镜像映射逻辑不同。导致汇出后骨架与Unreal其他系统无法适配时，常透过blender坐标系骨骼(控制骨)驱动另一组Unreal坐标系的骨骼(变形骨)作为汇出使用。<br>
 ![控制变形骨](https://github.com/user-attachments/assets/748a5f81-892c-4cd1-b94a-082e11f84c86)<br>
 (绿色为控制骨，红色为变形骨)<br>
@@ -60,9 +60,9 @@
 ![模型/骨骼汇出](https://github.com/user-attachments/assets/51f6fdc1-0226-4888-86fe-b689e6507614)<br>
 **Mesh Path汇出路径:** 动作汇出路径。<br>
 <br>
-**Apply Modifiers套用修改器:** 建议保持启用。<br>
+**Apply Modifiers 套用修改器:** 建议保持启用。<br>
 <br>
-**Skeletal Prefix骨骼体前缀:** <br>
+**Skeletal Prefix 骨骼体前缀:** <br>
 汇出后的档案名称为Skeletal prefix + Armature名称。<br>
 Armature名称:<br>
 ![骨骼体名称](https://github.com/user-attachments/assets/a064f303-9e1e-4058-ace8-4acb61a530fa)<br>
@@ -73,7 +73,7 @@ EX:Skeletal Prefix :SK_，Armature 名称:Mannequin，汇出后的名称为:SK_M
 要汇出的动作需启用小盾牌(fake_user)。
 ![小盾牌](https://github.com/user-attachments/assets/fcdff198-93a8-480a-b77c-9193a52bc49f)<br>
 
-**Export Type汇出模式**<br>
+**Export Type 汇出模式:** <br>
 >Selected所选项
 >>会汇出当前blender视图中选择中的动作。<br>
 >
