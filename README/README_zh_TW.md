@@ -31,9 +31,9 @@ File > Export > BL Export to Unreal<br>
 
 ## 核心功能:
 ![核心功能](https://github.com/user-attachments/assets/cd524f2b-c52d-40e0-b6ab-f29e263ce76f)
-### Auto Fix Scale 自動修正比例
+### Auto Fix Scale 自動修正比例:
 依據blender場景單位為基準自動解算縮放比例，確保骨骼網格體及動作在Blender中的尺寸與匯入Unreal的尺寸一致
-### Use Virtual Deform 使用虛擬變形骨骼
+### Use Virtual Deform 使用虛擬變形骨骼:
 **適用場景**: Blender骨骼坐標系主軸為Y，Unreal骨骼坐標系主軸為X，且兩者左右鏡像映射邏輯不同。導致輸出後骨架與Unreal其他系統無法適配時，常透過blender坐標系骨骼(控制骨)驅動另一組Unreal坐標系的骨骼(變形骨)作為輸出使用。<br>
 ![控制變形骨](https://github.com/user-attachments/assets/748a5f81-892c-4cd1-b94a-082e11f84c86)<br>
 (綠色為控制骨，紅色為變形骨)<br>
@@ -53,7 +53,7 @@ File > Export > BL Export to Unreal<br>
 >>網格體的頂點組 (Vertex Groups)名稱對應控制骨名稱<br>
 >>![頂點組名稱](https://github.com/user-attachments/assets/d9f181de-e55d-478b-9ce5-2273eac86fa4)
 >
-**運作方式:**
+**運作方式**
 自動將控制骨動畫烘培至變形骨。<br>
 輸出後自動移除變形骨前綴並啟用Deform。
 ## 模型/骨骼輸出:
