@@ -62,7 +62,7 @@ EX: Prefix: `SK_`, Armature: `Mannequin`, Result: `SK_Mannequin`<br>
 Actions to be exported must have the **Fake User** (shield icon) enabled.
 ![小盾牌](https://github.com/user-attachments/assets/fcdff198-93a8-480a-b77c-9193a52bc49f)<br>
 
-**Export Type**<br>
+**Export Type:** <br>
 >Selected
 >>Exports the action currently selected in the Blender viewport.<br>
 >
