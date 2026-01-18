@@ -60,20 +60,20 @@ File > Export > BL Export to Unreal<br>
 ![模型/骨骼輸出](https://github.com/user-attachments/assets/51f6fdc1-0226-4888-86fe-b689e6507614)<br>
 **Mesh Path輸出路徑:** 骨架及網格體輸出路徑。<br>
 <br>
-**Apply Modifiers套用修改器:** 建議保持啟用。<br>
+**Apply Modifiers 套用修改器:** 建議保持啟用。<br>
 <br>
-**Skeletal Prefix骨骼體前綴:** <br>
+**Skeletal Prefix 骨骼體前綴:** <br>
 輸出後的檔案名稱為Skeletal prefix + Armature名稱<br>
 Armature名稱:<br>
 ![骨骼體名稱](https://github.com/user-attachments/assets/a064f303-9e1e-4058-ace8-4acb61a530fa)<br>
 EX:Skeletal Prefix :SK_，Armature 名稱:Mannequin，輸出後的名稱為:SK_Mannequin<br>
 ## 動作輸出:
 ![動作輸出](https://github.com/user-attachments/assets/d7a8f9e2-7cfc-450c-b0e7-d98e26a18e97)<br>
-**Action Path:** 動作輸出路徑。<br>
+**Action Path 動作輸出路徑:** <br>
 要輸出的動作需啟用小盾牌(fake_user)。
 ![小盾牌](https://github.com/user-attachments/assets/fcdff198-93a8-480a-b77c-9193a52bc49f)<br>
 
-**Export Type輸出模式**<br>
+**Export Type 輸出模式:** <br>
 >Selected所選項
 >>會輸出當前blender視圖中選擇中的動作。<br>
 >
@@ -91,6 +91,6 @@ EX:Skeletal Prefix :SK_，Armature 名稱:Mannequin，輸出後的名稱為:SK_M
 > [!CAUTION]
 > **注意：** 使用Use Virtual Deform時，避免NLA軌道干擾，會自動禁用Export Type的ALL模式以及Bake NLA Strips。<br>
 
-**Action Prefix動作前綴:** 為輸出後的動畫序列加上前綴。<br>
+**Action Prefix 動作前綴:** 為輸出後的動畫序列加上前綴。<br>
 ## 進階設定:
 ![進階設定](https://github.com/user-attachments/assets/24a95db5-0def-4b29-9949-787be6c47757)
