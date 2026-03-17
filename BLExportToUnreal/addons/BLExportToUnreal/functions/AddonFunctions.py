@@ -1,6 +1,7 @@
 import bpy
 
 from ..config import __addon_name__
+from ..utils import AddonUtils
 def get_preferences():
     return bpy.context.preferences.addons[__addon_name__].preferences
 
@@ -55,7 +56,7 @@ def bake_action(context, arm, act_list, export_prefix=""):
     bpy.ops.pose.select_all(action='DESELECT')
     for pb in arm.pose.bones:
         if pb.bone.use_deform:
-            pb.bone.select = True
+            AddonUtils.Compat.bone_selection(pb, True)
         #Record original constraint states
         for con in pb.constraints:
             con_states[(pb.name, con.name)] = con.mute

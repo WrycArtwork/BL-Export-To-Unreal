@@ -3,6 +3,7 @@ import os
 import bpy
 from bpy_extras.io_utils import ExportHelper
 from ..functions import AddonFunctions
+from ..utils import AddonUtils
 from pathlib import Path
 
 # __EXPORT TOOL__
@@ -98,7 +99,6 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         box_feature = layout.box()
         box_feature.label(text="Feature")
         row = box_feature.row(align=True)
-        row = box_feature.row()
         row.prop(settings, "auto_fix_scale", text="Auto Fix Scale")
         row.prop(settings, "use_virtual_deform", text="Use Virtual Deform")
 
@@ -270,7 +270,8 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
                 bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
                 for action in export_list:
-                    for fcurve in action.fcurves:
+                    fcurves = AddonUtils.Compat.get_fcurves_list(action)
+                    for fcurve in fcurves:
                         if fcurve.data_path.endswith('location'):
                             for kp in fcurve.keyframe_points:
                                 kp.co.y *= 1 / scale_factor
@@ -287,7 +288,9 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
             #___Export___
             # Mesh/Armature
             if settings.mesh_path.strip():
+                context.view_layer.objects.active = arm
                 arm.data.pose_position = 'REST'
+                context.view_layer.update()
                 export_dir = bpy.path.abspath(settings.mesh_path)
                 sk_file_name = settings.skeletal_prefix + orig_name
                 export_file = os.path.join(export_dir, sk_file_name + ".fbx")
@@ -300,8 +303,9 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
             if settings.action_path.strip():
                 bpy.ops.object.select_all(action='DESELECT')
                 arm.select_set(True)
-                bpy.context.view_layer.objects.active = arm
+                context.view_layer.objects.active = arm
                 arm.data.pose_position = 'POSE'
+                context.view_layer.update()
 
                 if settings.export_type == "SELECTED":
                     export_action = export_list[0]
@@ -378,7 +382,8 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
                 bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
                 if settings.use_virtual_deform is False:
                     for action in export_list:
-                        for fcurve in action.fcurves:
+                        fcurves = AddonUtils.Compat.get_fcurves_list(action)
+                        for fcurve in fcurves:
                             if fcurve.data_path.endswith('location'):
                                 for kp in fcurve.keyframe_points:
                                     kp.co.y *= scale_factor

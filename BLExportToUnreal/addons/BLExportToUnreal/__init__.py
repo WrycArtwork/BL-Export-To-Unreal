@@ -13,7 +13,7 @@ bl_info = {
     "name": "BL Export To Unreal",
     "author": "WRYC",
     "blender": (4, 0, 2),
-    "version": (0, 0, 1),
+    "version": (0, 0, 2),
     "description": "Easily export meshes, armatures, and animations to Unreal Engine with automatically fixed naming, scale, and compatibility..",
     "doc_url": "https://github.com/WrycArtwork/BL-Export-To-Unreal",
     "category": "Import-Export"
@@ -34,7 +34,7 @@ def register():
     auto_load.register()
     add_properties(_addon_properties)
 
-    # ExportToUnreal
+    # ExportToUnrealMenu
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export_ue)
     # Internationalization
     load_dictionary(dictionary)
@@ -44,7 +44,7 @@ def register():
 
 
 def unregister():
-    # ExportToUnreal
+    # ExportToUnrealMenu
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export_ue)
     # Internationalization
     bpy.app.translations.unregister(__addon_name__)
