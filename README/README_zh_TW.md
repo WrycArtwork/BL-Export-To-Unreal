@@ -57,7 +57,7 @@ File > Export > BL Export to Unreal<br>
 自動將控制骨動畫烘培至變形骨。<br>
 輸出後自動移除變形骨前綴並啟用Deform。
 ## 模型/骨骼輸出:
-![模型/骨骼輸出](https://github.com/user-attachments/assets/51f6fdc1-0226-4888-86fe-b689e6507614)<br>
+![模型/骨骼輸出](https://github.com/user-attachments/assets/5152a836-1822-4b24-9ff3-eb207ed8ea4d)<br>
 **Mesh Path輸出路徑:** 骨架及網格體輸出路徑。<br>
 <br>
 **Apply Modifiers 套用修改器:** 建議保持啟用。<br>
