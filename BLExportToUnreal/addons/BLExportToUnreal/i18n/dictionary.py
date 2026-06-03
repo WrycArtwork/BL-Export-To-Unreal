@@ -11,9 +11,11 @@ dictionary = {
         ("*", "Auto Fix Scale"): "自動修正比例",
         ("*", "Use Virtual Deform"): "使用虛擬變形骨骼",
 
+        ("*", "Export Mesh"): "匯出模型/骨架",
         ("*", "Mesh Path"): "匯出路徑",
         ("*", "Apply Modifiers"): "應用修改器",
-        ("*", "Skeletal Prefix:"): "骨骼體前綴:",
+        ("*", "Skeletal Prefix"): "骨骼體前綴",
+        ("*", "Static Prefix"): "網格體前綴",
 
         ("*", "Action Path"): "匯出路徑",
         ("*", "Export Type"): "匯出模式",
@@ -21,7 +23,7 @@ dictionary = {
         ("*", "Add Start/End Keyframes"): "補齊首尾幀",
         ("*", "Bake NLA Strips"): "烘焙 NLA 片段",
         ("*", "File Name:"): "檔案名稱:",
-        ("*", "Action Prefix:"): "動畫前綴:",
+        ("*", "Action Prefix"): "動畫前綴",
 
         ("*", "Selected"): "當前選中",
         ("*", "Batch"): "批次匯出",
@@ -47,9 +49,11 @@ dictionary = {
         ("*", "Auto Fix Scale"): "自动修正比例",
         ("*", "Use Virtual Deform"): "使用虚拟变形骨骼",
 
+        ("*", "Export Mesh"): "导出模型/骨架",
         ("*", "Mesh Path"): "导出路径",
         ("*", "Apply Modifiers"): "应用修改器",
-        ("*", "Skeletal Prefix:"): "骨架前缀:",
+        ("*", "Skeletal Prefix"): "骨骼体前缀",
+        ("*", "Static Prefix"): "网格体前缀",
 
         ("*", "Action Path"): "导出路径",
         ("*", "Export Type"): "导出模式",
@@ -57,7 +61,7 @@ dictionary = {
         ("*", "Add Start/End Keyframes"): "补齐首尾帧",
         ("*", "Bake NLA Strips"): "烘焙 NLA 片段",
         ("*", "File Name:"): "文件名:",
-        ("*", "Action Prefix:"): "动画前缀:",
+        ("*", "Action Prefix"): "动画前缀",
 
         ("*", "Selected"): "当前选中",
         ("*", "Batch"): "批量导出",
