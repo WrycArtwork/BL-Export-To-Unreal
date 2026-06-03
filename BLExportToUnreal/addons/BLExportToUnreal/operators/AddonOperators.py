@@ -104,25 +104,30 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
 
         box_mesh = layout.box()
         box_mesh.label(text="Mesh/Armature")
-        box_mesh.prop(settings, "mesh_path", text="Mesh Path")
-        row = box_mesh.row(align=True)
-        row.prop(settings, "apply_modifiers", text="Apply Modifiers")
-        box_mesh.prop(settings, "skeletal_prefix", text="Skeletal Prefix")
+        box_mesh.prop(settings, "is_export_mesh", text="Export Mesh")
+        if settings.is_export_mesh:
+            box_mesh.prop(settings, "mesh_path", text="Mesh Path")
+            row = box_mesh.row(align=True)
+            row.prop(settings, "apply_modifiers", text="Apply Modifiers")
+            box_mesh.prop(settings, "skeletal_prefix", text="Skeletal Prefix")
+            box_mesh.prop(settings, "static_prefix", text="Static Prefix")
 
         box_action = layout.box()
         box_action.label(text="Action")
-        box_action.prop(settings, "action_path", text="Action Path")
-        box_action.prop(settings, "export_type", text="Export Type")
-        if settings.export_type == 'BATCH':
-            box_action.operator("wryc.ot_select_export_actions", text="Export Actions")
+        box_action.prop(settings, "is_export_action", text="Export Action")
+        if settings.is_export_action:
+            box_action.prop(settings, "action_path", text="Action Path")
+            box_action.prop(settings, "export_type", text="Export Type")
+            if settings.export_type == 'BATCH':
+                box_action.operator("wryc.ot_select_export_actions", text="Export Actions")
 
-        row = box_action.row(align=True)
-        row.prop(settings, "is_add_start_end", text="Add Start/End Keyframes")
-        if settings.use_virtual_deform == False:
-            row.prop(settings, "bake_nla_strips", text="Bake NLA Strips")
-        if settings.export_type == "ALL":
-            box_action.prop(settings, "file_name", text="File Name")
-        box_action.prop(settings, "action_prefix", text="Action Prefix")
+            row = box_action.row(align=True)
+            row.prop(settings, "is_add_start_end", text="Add Start/End Keyframes")
+            if settings.use_virtual_deform == False:
+                row.prop(settings, "bake_nla_strips", text="Bake NLA Strips")
+            if settings.export_type == "ALL":
+                box_action.prop(settings, "file_name", text="File Name")
+            box_action.prop(settings, "action_prefix", text="Action Prefix")
 
         box_advanced = layout.box()
         row = box_advanced.row()
@@ -158,31 +163,46 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         settings = context.scene.export_to_unreal
         pref = AddonFunctions.get_preferences()
         scale_factor = AddonFunctions.auto_fix_scale(context) #If auto fix scale is true, calculate scale factor.
+        can_export_action = False
+        can_export_mesh = False
 
-        #Set up armature
-        arm = [obj for obj in context.selected_objects if obj.type == 'ARMATURE'][0]
-        if not arm:
-            self.report({'ERROR'}, "No armature selected")
-            return {'CANCELLED'}
+        if settings.is_export_mesh or settings.is_export_action:
+            #Set up armature
+            arm = next((obj for obj in context.selected_objects if obj.type == 'ARMATURE'), None)
 
-        #Set up meshes
-        meshs = [obj for obj in context.selected_objects if obj.type == 'MESH']
-        if settings.mesh_path.strip() and not meshs:
-            self.report({'ERROR'}, "No mesh selected")
+            if settings.is_export_action and settings.action_path.strip() and arm:
+                can_export_action = True
+            if settings.is_export_action and settings.action_path.strip() and not arm:
+                self.report({'ERROR'}, "No armature selected")
+                return {'CANCELLED'}
+
+            #Set up meshes
+            meshs = [obj for obj in context.selected_objects if obj.type == 'MESH' or obj.type == 'EMPTY']
+            if settings.is_export_mesh and settings.mesh_path.strip() and meshs:
+                can_export_mesh = True
+            if settings.is_export_mesh and settings.mesh_path.strip() and not meshs:
+                self.report({'ERROR'}, "No mesh selected")
+                return {'CANCELLED'}
+        else:
             return {'CANCELLED'}
 
         # Temporarily original states
         selected_objects = context.selected_objects[:]
         active_obj = context.view_layer.objects.active
-        orig_name = arm.name
-        orig_action = arm.animation_data.action if arm.animation_data else None
-        orig_action_name_map = {}
-        orig_pose_position = arm.data.pose_position
-        orig_timeline_range = context.scene.frame_start, context.scene.frame_end
+
+
+        if arm:
+            orig_name = arm.name
+            if can_export_action:
+                orig_action = arm.animation_data.action if arm.animation_data else None
+                orig_pose_position = arm.data.pose_position
+        else:
+            orig_name = active_obj.name
 
         #Select Actions by action export type
-        if settings.action_path.strip():
+        if can_export_action:
             actions_to_process = []
+            orig_timeline_range = context.scene.frame_start, context.scene.frame_end
 
             if settings.export_type == "SELECTED":
                 if arm.animation_data.action:
@@ -198,109 +218,130 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
         export_list = []
         baked_states_pack = {}
         bone_name_map = None
+        orig_action_name_map = {}
+
+        armature_to_restore = None
 
         try:
             #___Pre Process___
-            bpy.context.view_layer.objects.active = arm
-            arm.name = "Armature" #Rename armature name -> "Armature"
-            if arm.data.users > 1:
-                arm.data = arm.data.copy()
+            if arm:
+                armature_to_restore = bpy.data.objects.get("Armature")
+                if armature_to_restore and armature_to_restore != arm:
+                    armature_to_restore.name = "Armature_temp" #If "Armature" already exist, rename it as "Armature_temp"
 
-            #If root bone isn't exist, add root bone.
-            bpy.ops.object.mode_set(mode='EDIT')
-            edit_bones = arm.data.edit_bones
-            if settings.use_virtual_deform:#Add deform root bone.
-                def_root_name = f"{pref.deform_prefix}root"
-                if f"{pref.deform_prefix}root" not in edit_bones:
-                    def_root = edit_bones.new(def_root_name)
-                    def_root.head = (0, 0, 0)
-                    def_root.roll = math.radians(-90)
-                    def_root.tail = (0, 0.1, 0)
-                    for b in [eb for eb in edit_bones if eb.name.startswith(pref.deform_prefix)]:
-                        if b.name != def_root_name and b.parent is None:
-                            b.parent = def_root
-                else:
-                    def_root = edit_bones[f"{pref.deform_prefix}root"]
-                    def_root.head = (0, 0, 0)
+                bpy.context.view_layer.objects.active = arm
+                arm.name = "Armature" #Rename armature name -> "Armature"
 
-            if "root" not in edit_bones:
-                root = edit_bones.new("root")
-                root.head = (0, 0, 0)
-                root.tail = (0, 0, 0.1)
-                root.use_deform = True
-                for b in edit_bones:
-                    if b.name != "root" and b.name != def_root_name and b.parent is None:
-                        b.parent = root
-            else:
-                root = edit_bones["root"]
-                root.head = (0, 0, 0)
+                if arm.data.users > 1:
+                    arm.data = arm.data.copy()
 
-            # Process virtual deform bones and original bones
-            if settings.use_virtual_deform:
-                if hasattr(pref, 'deform_prefix') and hasattr(pref, 'original_prefix'):
-                    bone_name_map = AddonFunctions.apply_virtual_deform_conversion(
-                        context, arm, meshs
-                    )
-                else:
-                    self.report({'ERROR'}, "Preferences for necessary prefixes are not set.")
-                    return {'CANCELLED'}
+                #If root bone isn't exist, add root bone.
+                bpy.ops.object.mode_set(mode='EDIT')
+                edit_bones = arm.data.edit_bones
+                if settings.use_virtual_deform:#Add deform root bone.
+                    def_root_name = f"{pref.deform_prefix}root"
+                    if f"{pref.deform_prefix}root" not in edit_bones:
+                        def_root = edit_bones.new(def_root_name)
+                        def_root.head = (0, 0, 0)
+                        def_root.roll = math.radians(-90)
+                        def_root.tail = (0, 0.1, 0)
+                        for b in [eb for eb in edit_bones if eb.name.startswith(pref.deform_prefix)]:
+                            if b.name != def_root_name and b.parent is None:
+                                b.parent = def_root
+                    else:
+                        def_root = edit_bones[f"{pref.deform_prefix}root"]
+                        def_root.head = (0, 0, 0)
 
-                # Bake actions
-                if settings.action_path.strip() and actions_to_process:
-                    action_map, baked_list, baked_states_pack = AddonFunctions.bake_action(
-                        context, arm, actions_to_process, settings.action_prefix
-                    )
-                    export_list =baked_list
+                if "root" not in edit_bones:
+                    root = edit_bones.new("root")
+                    root.head = (0, 0, 0)
+                    root.tail = (0, 0, 0.1)
+                    root.use_deform = True
+                    if settings.use_virtual_deform:
+                        for b in edit_bones:
+                            if b.name != "root" and b.name != def_root_name and b.parent is None:
+                                b.parent = root
 
-            else:#If not use virtual deform, add original actions name prefix
-                for action in actions_to_process:
-                    orig_action_name_map[action] = action.name
-                    if not action.name.startswith(settings.action_prefix):
-                        action.name = f"{settings.action_prefix}{action.name}"
-                export_list = actions_to_process
+                # Process virtual deform bones and original bones
+                if settings.use_virtual_deform:
+                    if hasattr(pref, 'deform_prefix') and hasattr(pref, 'original_prefix'):
+                        bone_name_map = AddonFunctions.apply_virtual_deform_conversion(
+                            context, arm, meshs
+                        )
+                    else:
+                        self.report({'ERROR'}, "Preferences for necessary prefixes are not set.")
+                        return {'CANCELLED'}
+
+                    # Bake actions
+                    if can_export_action:
+                        action_map, baked_list, baked_states_pack = AddonFunctions.bake_action(
+                            context, arm, actions_to_process, settings.action_prefix
+                        )
+                        export_list =baked_list
+
+                elif settings.is_export_action:#If not use virtual deform, add original actions name prefix
+                    for action in actions_to_process:
+                        orig_action_name_map[action] = action.name
+                        if not action.name.startswith(settings.action_prefix):
+                            action.name = f"{settings.action_prefix}{action.name}"
+                    export_list = actions_to_process
 
             #Auto fix scale
             if scale_factor != 1.0:
                 bpy.ops.object.mode_set(mode='OBJECT')
                 bpy.ops.object.select_all(action='DESELECT')
-                arm.select_set(True)
-                context.view_layer.objects.active = arm
+                if arm:
+                    arm.select_set(True)
+                    context.view_layer.objects.active = arm
 
-                arm.scale *= 1 / scale_factor
-                bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+                    arm.scale *= 1 / scale_factor
+                    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
-                for action in export_list:
-                    fcurves = AddonUtils.Compat.get_fcurves_list(action)
-                    for fcurve in fcurves:
-                        if fcurve.data_path.endswith('location'):
-                            for kp in fcurve.keyframe_points:
-                                kp.co.y *= 1 / scale_factor
-                                kp.handle_left.y *= 1 / scale_factor
-                                kp.handle_right.y *= 1 / scale_factor
+                    if can_export_action:
+                        for action in export_list:
+                            fcurves = AddonUtils.Compat.get_fcurves_list(action)
+                            for fcurve in fcurves:
+                                if fcurve.data_path.endswith('location'):
+                                    for kp in fcurve.keyframe_points:
+                                        kp.co.y *= 1 / scale_factor
+                                        kp.handle_left.y *= 1 / scale_factor
+                                        kp.handle_right.y *= 1 / scale_factor
+                else:
+                    for mesh in meshs:
+                        mesh.select_set(True)
+                        context.view_layer.objects.active = mesh
+                        mesh.scale *= 1 / scale_factor
+                        bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
-            #Select armature and meshes for export
+
             bpy.ops.object.select_all(action='DESELECT')
-            arm.select_set(True)
+            # Select armature
+            if arm:
+                arm.select_set(True)
+            #Select meshes
             for mesh in meshs:
                 mesh.select_set(True)
-            bpy.context.view_layer.objects.active = arm
 
             #___Export___
             # Mesh/Armature
-            if settings.mesh_path.strip():
-                context.view_layer.objects.active = arm
-                arm.data.pose_position = 'REST'
-                context.view_layer.update()
+            if can_export_mesh:
                 export_dir = bpy.path.abspath(settings.mesh_path)
-                sk_file_name = settings.skeletal_prefix + orig_name
-                export_file = os.path.join(export_dir, sk_file_name + ".fbx")
+                if arm:
+                    context.view_layer.objects.active = arm
+                    arm.data.pose_position = 'REST'
+                    context.view_layer.update()
+                    sk_file_name = settings.skeletal_prefix + orig_name
+                    export_file = os.path.join(export_dir, sk_file_name + ".fbx")
+                else:
+                    sm_file_name = settings.static_prefix + orig_name
+                    export_file = os.path.join(export_dir, sm_file_name + ".fbx")
                 AddonFunctions.do_export(
-                    context, filepath=export_file, object_type={'ARMATURE', 'MESH'}, bake_anim=False
+                    context, filepath=export_file, object_type={'ARMATURE', 'MESH', 'EMPTY'}, bake_anim=False
                 )
                 self.report({'INFO'}, f"Mesh/Armature Exported Successfully")
 
-            # Action
-            if settings.action_path.strip():
+            #Action
+            if can_export_action:
                 bpy.ops.object.select_all(action='DESELECT')
                 arm.select_set(True)
                 context.view_layer.objects.active = arm
@@ -369,47 +410,52 @@ class WRYC_OT_ExportToUnreal(bpy.types.Operator, ExportHelper):
             #___Restore___
             bpy.ops.object.mode_set(mode='OBJECT')
             bpy.ops.object.select_all(action='DESELECT')
-            arm.select_set(True)
-            bpy.context.view_layer.objects.active = arm
-            if arm.data.users > 1:
-                arm.data = arm.data.copy()
-            arm.name = orig_name
-            arm.data.pose_position = orig_pose_position
+            if arm:
+                arm.select_set(True)
+                bpy.context.view_layer.objects.active = arm
+                arm.name = orig_name
+                if can_export_action:
+                    arm.data.pose_position = orig_pose_position
+
+            if armature_to_restore != None and armature_to_restore.name == "Armature_temp":
+                armature_to_restore.name = "Armature"
 
             #Restore Scale to original
             if scale_factor != 1.0:
-                arm.scale *= scale_factor
-                bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-                if settings.use_virtual_deform is False:
-                    for action in export_list:
-                        fcurves = AddonUtils.Compat.get_fcurves_list(action)
-                        for fcurve in fcurves:
-                            if fcurve.data_path.endswith('location'):
-                                for kp in fcurve.keyframe_points:
-                                    kp.co.y *= scale_factor
-                                    kp.handle_left.y *= scale_factor
-                                    kp.handle_right.y *= scale_factor
+                if arm:
+                    arm.scale *= scale_factor
+                    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+                    if settings.use_virtual_deform is False and can_export_action:
+                        for action in export_list:
+                            fcurves = AddonUtils.Compat.get_fcurves_list(action)
+                            for fcurve in fcurves:
+                                if fcurve.data_path.endswith('location'):
+                                    for kp in fcurve.keyframe_points:
+                                        kp.co.y *= scale_factor
+                                        kp.handle_left.y *= scale_factor
+                                        kp.handle_right.y *= scale_factor
+                else:
+                    for mesh in meshs:
+                        mesh.select_set(True)
+                        context.view_layer.objects.active = mesh
+                        mesh.scale *= scale_factor
+                        bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
-            #Restore actions name as original if not use virtual deform
-            if not settings.use_virtual_deform and orig_action_name_map:
-                for action, orig_name in orig_action_name_map.items():
-                    action.name = orig_name
+                #Restore actions name as original if not use virtual deform
+                if not settings.use_virtual_deform and orig_action_name_map:
+                    for action, orig_action_name in orig_action_name_map.items():
+                        action.name = orig_action_name
 
-            #Restore before baked state
-            AddonFunctions.restore_baked_action(arm, action_map, settings.action_prefix, baked_states_pack)
+            if can_export_action:
+                AddonFunctions.restore_baked_action(arm, action_map, settings.action_prefix, baked_states_pack) #Restore before baked state
+                context.scene.frame_start, context.scene.frame_end = orig_timeline_range #Restore timeline to origin
+                arm.animation_data.action = orig_action #Restore action as original selected action
 
-            # Restore action as original selected action
-            if orig_action:
-                arm.animation_data.action = orig_action
-
-            # If use virtual deform is true, restore deform and control bones state
+            #If use virtual deform is true, restore deform and control bones state
             if settings.use_virtual_deform and bone_name_map is not None:
                 AddonFunctions.revert_virtual_deform_conversion(
                     context, arm, meshs, bone_name_map
                 )
-
-            # Restore timeline to origin
-            context.scene.frame_start, context.scene.frame_end = orig_timeline_range
 
             #Restore selected objects as before execute state
             bpy.ops.object.select_all(action='DESELECT')

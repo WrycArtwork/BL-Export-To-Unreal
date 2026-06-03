@@ -1,3 +1,5 @@
+from email.policy import default
+
 import bpy
 from bpy.props import EnumProperty, BoolProperty, StringProperty, CollectionProperty
 from bpy.types import PropertyGroup
@@ -19,17 +21,27 @@ def update_export_type(self, context):
     if self.use_virtual_deform and self.export_type == 'ALL':
         self.export_type = 'SELECTED'
 class ExportToUnreal(PropertyGroup):
-    #Mesh/Armature
-    mesh_path: StringProperty(
-        name="Mesh Path",
-        subtype='DIR_PATH',
-        default="//"
+    auto_fix_scale: BoolProperty(
+        name="Auto Fix Scale",
+        default=True
     )
 
     use_virtual_deform: BoolProperty(
         name="Use Virtual Deform Bones",
         default=False,
         update=update_export_type
+    )
+
+    #Mesh/Armature
+    is_export_mesh: BoolProperty(
+        name="Export Mesh",
+        default=True
+    )
+
+    mesh_path: StringProperty(
+        name="Mesh Path",
+        subtype='DIR_PATH',
+        default=""
     )
 
     apply_modifiers: BoolProperty(
@@ -48,12 +60,17 @@ class ExportToUnreal(PropertyGroup):
     )
 
     #Action
+    is_export_action: BoolProperty(
+        name="Export Action",
+        default=True
+    )
+
     export_actions: CollectionProperty(type=ActionEntry)
 
     action_path: StringProperty(
         name="Action Path",
         subtype='DIR_PATH',
-        default="//"
+        default=""
     )
 
     export_type: EnumProperty(
@@ -144,9 +161,4 @@ class ExportToUnreal(PropertyGroup):
             ('-Z', "-Z", "-Z"),
         ],
         default='Y'
-    )
-
-    auto_fix_scale: BoolProperty(
-        name="Auto Fix Scale",
-        default=True
     )

@@ -21,7 +21,7 @@ def auto_fix_scale(context):
     settings = context.scene.export_to_unreal
     scene = context.scene
 
-    if settings.auto_fix_scale == True:
+    if settings.auto_fix_scale:
         scale_factor =  0.01/scene.unit_settings.scale_length
     else:
         scale_factor = 1.0
@@ -235,7 +235,7 @@ def do_export(context, filepath, object_type={'ARMATURE'}, bake_anim=False, bake
         use_armature_deform_only=settings.only_deform,
         add_leaf_bones=settings.add_leaf,
         apply_scale_options='FBX_SCALE_ALL',
-        armature_nodetype='ROOT',
+        armature_nodetype='NULL',
         primary_bone_axis=settings.primary_bone_axis,
         secondary_bone_axis=settings.secondary_bone_axis,
         axis_forward=settings.axis_forward,
@@ -244,7 +244,7 @@ def do_export(context, filepath, object_type={'ARMATURE'}, bake_anim=False, bake
         bake_anim_use_all_actions=bake_all,
         bake_anim_force_startend_keying=settings.is_add_start_end,
         bake_anim_use_nla_strips=use_nla,
-        mesh_smooth_type='EDGE',
-        use_triangles=True,
+        mesh_smooth_type='FACE',
         use_tspace=True,
+        use_custom_props=True,
     )
