@@ -10,7 +10,7 @@
 File > Export > BL Export to Unreal<br>
 ![開啟位置](https://github.com/user-attachments/assets/5456db2e-8b74-477d-a387-aa118e95a2ac)
 ### 插件介面
-![介面](https://github.com/user-attachments/assets/3cb221e4-c883-4cfb-bcad-974caadad798)
+![介面](https://github.com/user-attachments/assets/16954315-d322-4023-bdb0-291521f51691)
 >[Feature 核心功能](#核心功能)
 >>Auto Fix Scale 自動修正比例<br>
 >>Use Virtual Deform 使用虛擬變形骨骼
@@ -58,17 +58,26 @@ File > Export > BL Export to Unreal<br>
 輸出後自動移除變形骨前綴並啟用Deform。
 ## 模型/骨骼輸出:
 ![模型/骨骼輸出](https://github.com/user-attachments/assets/5152a836-1822-4b24-9ff3-eb207ed8ea4d)<br>
-**Mesh Path輸出路徑:** 骨架及網格體輸出路徑。<br>
+**Export Mesh 是否輸出模型:** 是否輸出選中的骨架或網格體。<br>
+<br>
+**Mesh Path 輸出路徑:** 骨架及網格體輸出路徑。<br>
 <br>
 **Apply Modifiers 套用修改器:** 建議保持啟用。<br>
 <br>
 **Skeletal Prefix 骨骼體前綴:** <br>
-輸出後的檔案名稱為Skeletal prefix + Armature名稱<br>
+輸出後的檔案名稱為Skeletal prefix + Armature名稱。<br>
 Armature名稱:<br>
 ![骨骼體名稱](https://github.com/user-attachments/assets/a064f303-9e1e-4058-ace8-4acb61a530fa)<br>
-EX:Skeletal Prefix :SK_，Armature 名稱:Mannequin，輸出後的名稱為:SK_Mannequin<br>
+example: Skeletal Prefix :SK_，Armature 名稱:Mannequin，輸出後的名稱為:SK_Mannequin<br>
+<br>
+**Static Prefix 網格體前綴:** <br>
+輸出後的檔案名稱為Static Prefix + 作用中Mesh/Empty名稱。<br>
+選中模型但沒有選中骨骼時，會套用這個前綴。<br>
+<br>
 ## 動作輸出:
-![動作輸出](https://github.com/user-attachments/assets/d7a8f9e2-7cfc-450c-b0e7-d98e26a18e97)<br>
+![動作輸出](https://github.com/user-attachments/assets/6c908376-6a5f-4316-b8ae-888e521dd03a)<br>
+**Export Action 是否輸出動作:** 是否輸出選中的動作。<br>
+<br>
 **Action Path 動作輸出路徑:** <br>
 要輸出的動作需啟用小盾牌(fake_user)。
 ![小盾牌](https://github.com/user-attachments/assets/fcdff198-93a8-480a-b77c-9193a52bc49f)<br>
@@ -79,11 +88,11 @@ EX:Skeletal Prefix :SK_，Armature 名稱:Mannequin，輸出後的名稱為:SK_M
 >
 >Batch批次
 >>會出現Export Actions的按鍵，開啟選單選擇要輸出的動作。<br>
->>![批次選單](https://github.com/user-attachments/assets/95867858-0c7d-47b4-b53d-f1966755a145)<br>
+>>![批次選單](https://github.com/user-attachments/assets/ca42d8a2-5b94-401f-959b-4afeb18f020a)<br>
 >
 >ALL全部
 >>輸出所有Armature使用的動作。可以設定File Name作為輸出檔案名稱，保持空白則會以blend檔名進行輸出。<br>
->>![所有選單](https://github.com/user-attachments/assets/dea4f047-eded-4e6f-a03b-b108af76c762)<br>
+>>![所有選單](https://github.com/user-attachments/assets/f8314b73-5288-4d93-bfcc-4567ee6879bc)<br>
 >
 **Add Start/End Keyframes 補齊首尾幀:** 建議保持啟用。<br>
 <br>
