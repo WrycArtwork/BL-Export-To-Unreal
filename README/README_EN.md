@@ -12,20 +12,10 @@ File > Export > BL Export to Unreal<br>
 ### Interface
 ![Interface](https://github.com/user-attachments/assets/16954315-d322-4023-bdb0-291521f51691)
 >[Feature](#feature)
->>Auto Fix Scale<br>
->>Use Virtual Deform
 >
 >[Mesh/Armature Export Settings](#mesharmature)
->>Mesh Path<br>
->>Apply Modifiers<br>
->>Skeletal Prefix
 >
 >[Action Export Settings](#action)
->>Action Path<br>
->>Export Type<br>
->>Add Start/End keyframes<br>
->>Bake NLA Strips<br>
->>Action prefix
 >
 >[Advanced Settings](#advanced-settings)
 
