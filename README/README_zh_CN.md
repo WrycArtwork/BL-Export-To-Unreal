@@ -12,20 +12,10 @@ File > Export > BL Export to Unreal<br>
 ### 插件界面
 ![界面](https://github.com/user-attachments/assets/16954315-d322-4023-bdb0-291521f51691)
 >[Feature 核心功能](#核心功能)
->>Auto Fix Scale 自动修正比例<br>
->>Use Virtual Deform 使用虚拟变形骨骼
 >
 >[Mesh/Armature 模型/骨架导出设定](#模型骨骼导出)
->>Mesh Path 物件导出路径<br>
->>Apply Modifiers 应用修改器<br>
->>Skeletal Prefix 骨骼网格体前缀
 >
 >[Action 动作导出设定](#动作导出)
->>Action Path 动作导出路径<br>
->>Export Type 导出模式<br>
->>Add Start/End keyframes 补齐首尾帧<br>
->>Bake NLA Strips 烘焙NLA片段<br>
->>Action prefix 动作前缀
 >
 >[进阶设定](#进阶设定)
 
